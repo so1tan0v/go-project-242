@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"os"
-
-	"github.com/urfave/cli/v3"
 )
 
 func main() {
-	(&cli.Command{}).Run(context.Background(), os.Args)
+	cmd := GetAvailableCommands()
+
+	err := cmd.Run(context.Background(), os.Args)
+	if err != nil {
+		return
+	}
 }
