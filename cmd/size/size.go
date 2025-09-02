@@ -45,7 +45,19 @@ func GetSize(p string) (string, error) {
 }
 
 func main() {
-	relativePath := "bin"
+	if len(os.Args) < 1 {
+		log.Fatal("No args")
+
+		return
+	}
+
+	relativePath := os.Args[1]
+	if relativePath == "" {
+		log.Fatal("No file")
+
+		return
+	}
+
 	absPath, err := filepath.Abs(relativePath)
 	if err != nil {
 		log.Fatal(err)
