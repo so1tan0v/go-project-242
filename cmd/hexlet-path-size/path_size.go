@@ -5,9 +5,12 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
+
+	"github.com/dustin/go-humanize"
 )
 
-func GetSize(p string) (string, error) {
+func GetSize(p string, h bool, a bool) (string, error) {
 	stat, err := os.Lstat(p)
 	if err != nil {
 		return "", err
@@ -33,12 +36,25 @@ func GetSize(p string) (string, error) {
 			}
 
 			if statI.IsDir() == false {
-				size += statI.Size()
+				if a {
+					size += statI.Size()
+				} else if !strings.HasPrefix(statI.Name(), ".") {
+					size += statI.Size()
+				}
 			}
 		}
 	} else {
 		size = stat.Size()
 	}
 
-	return fmt.Sprintf("%dB	%s", stat.Size(), stat.Name()), nil
+	sizeStr := fmt.Sprintf("%dB", size)
+	if h {
+		sizeStr = FormatSize(size)
+	}
+
+	return fmt.Sprintf("%s	%s", sizeStr, stat.Name()), nil
+}
+
+func FormatSize(size int64) string {
+	return strings.ToUpper(strings.Replace(humanize.Bytes(uint64(size)), " ", "", -1))
 }
