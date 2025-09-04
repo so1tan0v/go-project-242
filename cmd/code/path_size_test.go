@@ -35,9 +35,6 @@ func TestGetSizeFile(t *testing.T) {
 func TestGetSizeDir(t *testing.T) {
 	pathToFile := path.Join(getWd(), "testdata")
 
-	fmt.Println(pathToFile)
-	fmt.Println(os.Stat(pathToFile))
-
 	result, err := GetSize(pathToFile)
 	assert.Nil(t, err)
 
