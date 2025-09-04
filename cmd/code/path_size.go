@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -42,32 +41,4 @@ func GetSize(p string) (string, error) {
 	}
 
 	return fmt.Sprintf("%dB	%s", stat.Size(), stat.Name()), nil
-}
-
-func main() {
-	if len(os.Args) < 1 {
-		log.Fatal("No args")
-
-		return
-	}
-
-	relativePath := os.Args[1]
-	if relativePath == "" {
-		log.Fatal("No file")
-
-		return
-	}
-
-	absPath, err := filepath.Abs(relativePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(absPath)
-
-	s, err := GetSize(absPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(s)
 }
