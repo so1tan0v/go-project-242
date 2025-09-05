@@ -1,114 +1,138 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"path"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func getWd() string {
-	wd, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Error getting current working directory: %v\n", err)
+var testDir = "testdata"
 
-		return ""
-	}
-	fmt.Printf("Current working directory: %s\n", wd)
-
-	return wd
-}
-
-func TestGetSizeFile(t *testing.T) {
-	var pathToFile = path.Join(getWd(), "testdata", "size.test")
+func TestGetSize(t *testing.T) {
+	var pathToFile = path.Join(testDir, "size.test")
 	var err error
-	var result string
+	var result int64
+	var isDir bool
 
-	// Combination fileName/false/false
-	result, err = GetSize(pathToFile, false, false)
+	// Test file
+	result, isDir, err = GetSize(0, pathToFile, false, false)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4480B	size.test", result)
+	assert.Equal(t, int64(4480), result)
+	assert.Equal(t, false, isDir)
 
-	// Combination fileName/true/false
+	// Test dir
 	err = nil
-	result = ""
+	result = 0
+	isDir = false
 
-	result, err = GetSize(pathToFile, true, false)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4.5KB	size.test", result)
-
-	// Combination fileName/true/true
-	err = nil
-	result = ""
-
-	result, err = GetSize(pathToFile, true, true)
+	result, isDir, err = GetSize(0, testDir, false, false)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4.5KB	size.test", result)
-
-	// Combination fileName/false/true
-	err = nil
-	result = ""
-
-	result, err = GetSize(pathToFile, false, true)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4480B	size.test", result)
+	assert.Equal(t, int64(4704), result)
+	assert.Equal(t, true, isDir)
 }
 
-func TestGetSizeDir(t *testing.T) {
-	var pathToDir = path.Join(getWd(), "testdata")
+func TestGetSizeAll(t *testing.T) {
+	var pathToFile = path.Join(testDir, "size.test")
 	var err error
-	var result string
+	var result int64
+	var isDir bool
 
-	// Combination fileName/false/false
-	result, err = GetSize(pathToDir, false, false)
+	// Test file
+	result, isDir, err = GetSize(0, pathToFile, true, false)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4704B	testdata", result)
+	assert.Equal(t, int64(4480), result)
+	assert.Equal(t, false, isDir)
 
-	// Combination fileName/true/false
+	// Test dir
 	err = nil
-	result = ""
+	result = 0
+	isDir = false
 
-	result, err = GetSize(pathToDir, true, false)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4.7KB	testdata", result)
-
-	// Combination fileName/true/true
-	err = nil
-	result = ""
-
-	result, err = GetSize(pathToDir, true, true)
+	result, isDir, err = GetSize(0, testDir, true, false)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4.9KB	testdata", result)
-
-	// Combination fileName/false/true
-	err = nil
-	result = ""
-
-	result, err = GetSize(pathToDir, false, true)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "4928B	testdata", result)
+	assert.Equal(t, int64(4928), result)
+	assert.Equal(t, true, isDir)
 }
 
-func TestGetSizeError(t *testing.T) {
-	pathToFile := path.Join(getWd(), "has_no_file")
-	result, err := GetSize(pathToFile, false, false)
+func TestGetSizeRecursive(t *testing.T) {
+	var pathToFile = path.Join(testDir, "size.test")
+	var err error
+	var result int64
+	var isDir bool
 
-	assert.NotNil(t, err, "There Error!")
-	assert.Equal(t, "", result)
+	// Test file
+	result, isDir, err = GetSize(0, pathToFile, false, true)
 
-	pathToFile = path.Join(getWd(), "testdata", "has_no_file.json")
-	result, err = GetSize(pathToFile, false, false)
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(4480), result)
+	assert.Equal(t, false, isDir)
 
-	assert.NotNil(t, err, "There Error!")
-	assert.Equal(t, "", result)
+	// Test dir
+	err = nil
+	result = 0
+	isDir = false
+
+	result, isDir, err = GetSize(0, testDir, false, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(5152), result)
+	assert.Equal(t, true, isDir)
+}
+
+func TestGetSizeRecursiveAll(t *testing.T) {
+	var pathToFile = path.Join(testDir, "size.test")
+	var err error
+	var result int64
+	var isDir bool
+
+	// Test file
+	result, isDir, err = GetSize(0, pathToFile, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(4480), result)
+	assert.Equal(t, false, isDir)
+
+	// Test dir
+	err = nil
+	result = 0
+	isDir = false
+
+	result, isDir, err = GetSize(0, testDir, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(6496), result)
+	assert.Equal(t, true, isDir)
+}
+
+func TestGetResult(t *testing.T) {
+	result, err := GetResult(path.Join(testDir, "size.test"), false, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "4480B	testdata/size.test", result)
+}
+
+func TestGetResultHuman(t *testing.T) {
+	result, err := GetResult(path.Join(testDir, "size.test"), true, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "4.50KB	testdata/size.test", result)
+}
+
+func TestGetResultHumanAll(t *testing.T) {
+	result, err := GetResult(testDir, true, true, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "4.90KB	testdata/", result)
+}
+
+func TestGetResultHumanRecursive(t *testing.T) {
+	result, err := GetResult(testDir, true, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "6.50KB	testdata/", result)
 }

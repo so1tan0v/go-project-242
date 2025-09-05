@@ -17,25 +17,32 @@ func GetAvailableCommands() cli.Command {
 				Name:    "human, H",
 				Aliases: []string{"H"},
 				Value:   false,
-				Usage:   "For get humanrized value",
+				Usage:   "human-readable sizes (auto-select unit) (default: false)",
 			},
 			&cli.BoolFlag{
 				Name:    "all, a",
 				Aliases: []string{"a"},
 				Value:   false,
-				Usage:   "include hidden files and directories.",
+				Usage:   "include hidden files and directories (default: false)",
+			},
+			&cli.BoolFlag{
+				Name:    "recursive, r",
+				Aliases: []string{"r"},
+				Value:   false,
+				Usage:   "recursive size of directories (default: false)",
 			},
 		},
 		Action: func(ctx context.Context, command *cli.Command) error {
-			h := command.Bool("human")
-			a := command.Bool("all")
-			p := command.Args().Get(0)
+			pathToObject := command.Args().Get(0)
+			human := command.Bool("human")
+			all := command.Bool("all")
+			recursive := command.Bool("recursive")
 
-			if p == "" {
+			if pathToObject == "" {
 				return fmt.Errorf("path is required")
 			}
 
-			size, err := GetSize(p, h, a)
+			size, err := GetResult(pathToObject, human, all, recursive)
 			if err != nil {
 				return fmt.Errorf("error getting size: %w", err)
 			}
