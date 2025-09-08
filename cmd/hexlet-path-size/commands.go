@@ -6,7 +6,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	hexletpathsize "code/pkg/sizer"
+	"code"
 )
 
 func GetAvailableCommands() cli.Command {
@@ -44,7 +44,7 @@ func GetAvailableCommands() cli.Command {
 				return fmt.Errorf("path is required")
 			}
 
-			size, err := hexletpathsize.GetResult(pathToObject, human, all, recursive)
+			size, err := code.GetResult(pathToObject, human, all, recursive)
 			if err != nil {
 				return fmt.Errorf("error getting size: %w", err)
 			}

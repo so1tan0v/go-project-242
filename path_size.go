@@ -1,4 +1,4 @@
-package sizer
+package code
 
 import (
 	"fmt"
