@@ -44,7 +44,7 @@ func GetAvailableCommands() cli.Command {
 				return fmt.Errorf("path is required")
 			}
 
-			size, err := code.GetResult(pathToObject, human, all, recursive)
+			size, err := code.GetPathSize(pathToObject, human, all, recursive)
 			if err != nil {
 				return fmt.Errorf("error getting size: %w", err)
 			}

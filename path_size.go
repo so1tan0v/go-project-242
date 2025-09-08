@@ -64,7 +64,7 @@ func FormatSize(size int64) string {
 	return strings.ToUpper(strings.Replace(humanize.Bytes(uint64(size)), " ", strconv.Itoa(0), -1))
 }
 
-func GetResult(pathToObject string, human bool, all bool, recursive bool) (string, error) {
+func GetPathSize(pathToObject string, human bool, all bool, recursive bool) (string, error) {
 	size, isDir, err := GetSize(0, pathToObject, all, recursive)
 	if err != nil {
 		log.Fatal(err)
