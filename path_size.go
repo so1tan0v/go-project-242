@@ -6,36 +6,30 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
-
-	"github.com/dustin/go-humanize"
 )
 
-func GetSize(size int64, pathToObject string, all bool, recursive bool) (int64, bool, error) {
-	isDir := false
+func GetSize(size int64, pathToObject string, all bool, recursive bool) (int64, error) {
 	stat, err := os.Lstat(pathToObject)
 	if err != nil {
-		return 0, false, err
+		return 0, err
 	}
 
 	if stat.IsDir() {
-		isDir = true
-
 		dir, err := os.ReadDir(pathToObject)
 		if err != nil {
-			return 0, isDir, err
+			return 0, err
 		}
 
 		for _, v := range dir {
 			absPath, err := filepath.Abs(path.Join(pathToObject, v.Name()))
 			if err != nil {
-				return 0, isDir, err
+				return 0, err
 			}
 
 			statI, err := os.Stat(absPath)
 			if err != nil {
-				return 0, isDir, err
+				return 0, err
 			}
 
 			if statI.IsDir() == false {
@@ -45,9 +39,9 @@ func GetSize(size int64, pathToObject string, all bool, recursive bool) (int64, 
 					size += statI.Size()
 				}
 			} else if recursive {
-				sizeRecursive, _, err := GetSize(size, path.Join(pathToObject, statI.Name()), all, recursive)
+				sizeRecursive, err := GetSize(size, path.Join(pathToObject, statI.Name()), all, recursive)
 				if err != nil {
-					return 0, isDir, err
+					return 0, err
 				}
 
 				size += sizeRecursive
@@ -57,15 +51,25 @@ func GetSize(size int64, pathToObject string, all bool, recursive bool) (int64, 
 		size += stat.Size()
 	}
 
-	return size, isDir, nil
+	return size, nil
 }
 
-func FormatSize(size int64) string {
-	return strings.ToUpper(strings.Replace(humanize.Bytes(uint64(size)), " ", strconv.Itoa(0), -1))
+func FormatSize(fileSizeInBytes int64) string {
+	double := float64(fileSizeInBytes)
+
+	i := -1
+	byteUnits := []string{"KB", "MB", "GB", "TB"}
+
+	for double > 1024 {
+		double /= 1024
+		i++
+	}
+
+	return fmt.Sprintf("%.1f%s", double, byteUnits[i])
 }
 
 func GetPathSize(pathToObject string, human bool, all bool, recursive bool) (string, error) {
-	size, isDir, err := GetSize(0, pathToObject, all, recursive)
+	size, err := GetSize(0, pathToObject, all, recursive)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -75,10 +79,15 @@ func GetPathSize(pathToObject string, human bool, all bool, recursive bool) (str
 		sizeStr = FormatSize(size)
 	}
 
-	result := fmt.Sprintf("%s\t%s", sizeStr, pathToObject)
-	if isDir && pathToObject[1:] != "/" {
-		result += "/"
+	return sizeStr, nil
+}
+
+func GetResult(pathToObject string, human bool, all bool, recursive bool) (string, error) {
+	sizeRead, err := GetPathSize(pathToObject, human, all, recursive)
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return result, nil
+	return fmt.Sprintf("%s\t%s", sizeRead, pathToObject), nil
 }
