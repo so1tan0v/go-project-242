@@ -71,7 +71,7 @@ func TestGetSizeRecursive(t *testing.T) {
 	result, err = code.GetSize(0, testDir, false, true)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, int64(5152), result)
+	assert.Equal(t, int64(5603), result)
 }
 
 func TestGetSizeRecursiveAll(t *testing.T) {
@@ -92,7 +92,22 @@ func TestGetSizeRecursiveAll(t *testing.T) {
 	result, err = code.GetSize(0, testDir, true, true)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, int64(6496), result)
+	assert.Equal(t, int64(8291), result)
+}
+
+func TestGetSizeRecursiveLessThen1024(t *testing.T) {
+	var pathToDir = path.Join(testDir, "dir_less_1024b")
+	var err error
+	var result int64
+
+	// Test dir
+	err = nil
+	result = 0
+
+	result, err = code.GetSize(0, pathToDir, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(3), result)
 }
 
 func TestGetResult(t *testing.T) {
@@ -120,5 +135,5 @@ func TestGetResultHumanRecursive(t *testing.T) {
 	result, err := code.GetResult(testDir, true, true, true)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "6.3KB	testdata", result)
+	assert.Equal(t, "8.1KB	testdata", result)
 }
