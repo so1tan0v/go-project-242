@@ -51,6 +51,24 @@ func TestGetSizeAll(t *testing.T) {
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, int64(4928), result)
+
+	// Test dir
+	err = nil
+	result = 0
+
+	result, err = code.GetSize(0, path.Join(testDir, "dir"), true, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(448), result)
+
+	// Test dir_rec
+	err = nil
+	result = 0
+
+	result, err = code.GetSize(0, path.Join(testDir, "dir", "dir_rec"), true, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(448), result)
 }
 
 func TestGetSizeRecursive(t *testing.T) {
@@ -93,6 +111,24 @@ func TestGetSizeRecursiveAll(t *testing.T) {
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, int64(8291), result)
+
+	// Test dir
+	err = nil
+	result = 0
+
+	result, err = code.GetSize(0, path.Join(testDir, "dir"), true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(1120), result)
+
+	// Test dir_rec
+	err = nil
+	result = 0
+
+	result, err = code.GetSize(0, path.Join(testDir, "dir", "dir_rec"), true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, int64(448), result)
 }
 
 func TestGetSizeRecursiveLessThen1024(t *testing.T) {
@@ -136,4 +172,43 @@ func TestGetResultHumanRecursive(t *testing.T) {
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "8.1KB	testdata", result)
+}
+
+func TestGetPathSize(t *testing.T) {
+	var pathToFile = path.Join(testDir, "size.test")
+	var err error
+	var result string
+
+	// Test file
+	result, err = code.GetPathSize(pathToFile, true, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "4.4KB", result)
+
+	// Test dir
+	err = nil
+	result = ""
+
+	result, err = code.GetPathSize(testDir, true, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "8.1KB", result)
+
+	// Test dir
+	err = nil
+	result = ""
+
+	result, err = code.GetPathSize(path.Join(testDir, "dir"), true, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "1.1KB", result)
+
+	// Test dir_rec
+	err = nil
+	result = ""
+
+	result, err = code.GetPathSize(path.Join(testDir, "dir", "dir_rec"), true, true, true)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "448B", result)
 }
