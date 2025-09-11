@@ -39,7 +39,6 @@ func GetSize(pathToObject string, all bool, recursive bool) (int64, error) {
 				}
 			} else if recursive {
 				sizeRecursive := int64(0)
-				err = nil
 				if all || !strings.HasPrefix(statI.Name(), ".") {
 					sizeRecursive, err = GetSize(path.Join(pathToObject, statI.Name()), all, recursive)
 					if err != nil {
