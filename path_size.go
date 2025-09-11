@@ -33,7 +33,7 @@ func GetSize(pathToObject string, all bool, recursive bool) (int64, error) {
 				return 0, err
 			}
 
-			if statI.IsDir() == false {
+			if !statI.IsDir() {
 				if all || !strings.HasPrefix(statI.Name(), ".") {
 					size += statI.Size()
 				}
