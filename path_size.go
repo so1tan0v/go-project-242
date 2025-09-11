@@ -66,7 +66,7 @@ func FormatSize(fileSizeInBytes int64) string {
 	}
 
 	if i == -1 {
-		return fmt.Sprintf("%d", fileSizeInBytes)
+		return fmt.Sprintf("%dB", fileSizeInBytes)
 	}
 
 	return fmt.Sprintf("%.1f%s", double, byteUnits[i])
