@@ -48,6 +48,38 @@ func TestGetPathSize_Recursive(t *testing.T) {
 	var result string
 
 	// Test file
+	result, err = code.GetPathSize(path.Join(testDir, "file"), true, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "2048B", result)
+
+	result, err = code.GetPathSize(path.Join(testDir, ".file"), true, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "20B", result)
+
+	// Test dir
+	result, err = code.GetPathSize(path.Join(testDir), true, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "2088B", result)
+
+	result, err = code.GetPathSize(path.Join(testDir, "dir"), true, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "40B", result)
+
+	result, err = code.GetPathSize(path.Join(testDir, ".dir"), true, false, false)
+
+	assert.Nil(t, err, "There aren't error")
+	assert.Equal(t, "40B", result)
+}
+
+func TestGetPathSize_All(t *testing.T) {
+	var err error
+	var result string
+
+	// Test file
 	result, err = code.GetPathSize(path.Join(testDir, "file"), false, false, true)
 
 	assert.Nil(t, err, "There aren't error")
@@ -62,46 +94,14 @@ func TestGetPathSize_Recursive(t *testing.T) {
 	result, err = code.GetPathSize(path.Join(testDir), false, false, true)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "2128B", result)
+	assert.Equal(t, "2068B", result)
 
 	result, err = code.GetPathSize(path.Join(testDir, "dir"), false, false, true)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "40B", result)
+	assert.Equal(t, "20B", result)
 
 	result, err = code.GetPathSize(path.Join(testDir, ".dir"), false, false, true)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "40B", result)
-}
-
-func TestGetPathSize_All(t *testing.T) {
-	var err error
-	var result string
-
-	// Test file
-	result, err = code.GetPathSize(path.Join(testDir, "file"), false, true, false)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "2048B", result)
-
-	result, err = code.GetPathSize(path.Join(testDir, ".file"), false, true, false)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "20B", result)
-
-	// Test dir
-	result, err = code.GetPathSize(path.Join(testDir), false, true, false)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "2068B", result)
-
-	result, err = code.GetPathSize(path.Join(testDir, "dir"), false, true, false)
-
-	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "20B", result)
-
-	result, err = code.GetPathSize(path.Join(testDir, ".dir"), false, true, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "20B", result)
@@ -111,7 +111,7 @@ func TestGetPathSize_EmptyDir(t *testing.T) {
 	var err error
 	var result string
 
-	result, err = code.GetPathSize(path.Join(testDir, "empty"), false, true, false)
+	result, err = code.GetPathSize(path.Join(testDir, "empty"), false, false, true)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "0B", result)
@@ -131,17 +131,17 @@ func TestGetPathSize_SingleFile(t *testing.T) {
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "2048B", result)
 
-	result, err = code.GetPathSize(path.Join(testDir, "file"), true, false, false)
+	result, err = code.GetPathSize(path.Join(testDir, "file"), false, true, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "2.0KB", result)
 
-	result, err = code.GetPathSize(path.Join(testDir, "file"), false, true, false)
+	result, err = code.GetPathSize(path.Join(testDir, "file"), false, false, true)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "2048B", result)
 
-	result, err = code.GetPathSize(path.Join(testDir, "file"), false, false, true)
+	result, err = code.GetPathSize(path.Join(testDir, "file"), true, false, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "2048B", result)
@@ -151,17 +151,17 @@ func TestGetPathSize_HiddenFilesIgnored(t *testing.T) {
 	var err error
 	var result string
 
-	result, err = code.GetPathSize(path.Join(testDir), false, false, true)
+	result, err = code.GetPathSize(path.Join(testDir), true, false, false)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "2128B", result)
+	assert.Equal(t, "2088B", result)
 
-	result, err = code.GetPathSize(path.Join(testDir, "dir"), false, false, true)
+	result, err = code.GetPathSize(path.Join(testDir, "dir"), true, false, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "40B", result)
 
-	result, err = code.GetPathSize(path.Join(testDir, ".dir"), false, false, true)
+	result, err = code.GetPathSize(path.Join(testDir, ".dir"), true, false, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "40B", result)
@@ -171,17 +171,17 @@ func TestGetPathSize_HumanReadable(t *testing.T) {
 	var err error
 	var result string
 
-	result, err = code.GetPathSize(path.Join(testDir, "file"), true, false, false)
+	result, err = code.GetPathSize(path.Join(testDir, "file"), false, true, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "2.0KB", result)
 
-	result, err = code.GetPathSize(path.Join(testDir, ".file"), true, false, false)
+	result, err = code.GetPathSize(path.Join(testDir, ".file"), false, true, false)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "20B", result)
 
-	result, err = code.GetPathSize(path.Join(testDir), true, true, false)
+	result, err = code.GetPathSize(path.Join(testDir), false, true, true)
 
 	assert.Nil(t, err, "There aren't error")
 	assert.Equal(t, "2.0KB", result)
@@ -189,5 +189,5 @@ func TestGetPathSize_HumanReadable(t *testing.T) {
 	result, err = code.GetPathSize(path.Join(testDir), true, true, true)
 
 	assert.Nil(t, err, "There aren't error")
-	assert.Equal(t, "3.8KB", result)
+	assert.Equal(t, "2.2KB", result)
 }
