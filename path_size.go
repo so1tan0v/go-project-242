@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func GetSize(pathToObject string, all bool, recursive bool) (int64, error) {
+func getSize(pathToObject string, all bool, recursive bool) (int64, error) {
 	size := int64(0)
 	stat, err := os.Lstat(pathToObject)
 	if err != nil {
@@ -40,7 +40,7 @@ func GetSize(pathToObject string, all bool, recursive bool) (int64, error) {
 			} else if recursive {
 				sizeRecursive := int64(0)
 				if all || !strings.HasPrefix(statI.Name(), ".") {
-					sizeRecursive, err = GetSize(path.Join(pathToObject, statI.Name()), all, recursive)
+					sizeRecursive, err = getSize(path.Join(pathToObject, statI.Name()), all, recursive)
 					if err != nil {
 						return 0, err
 					}
@@ -56,7 +56,7 @@ func GetSize(pathToObject string, all bool, recursive bool) (int64, error) {
 	return size, nil
 }
 
-func FormatSize(fileSizeInBytes int64) string {
+func formatSize(fileSizeInBytes int64) string {
 	double := float64(fileSizeInBytes)
 
 	i := -1
@@ -75,14 +75,14 @@ func FormatSize(fileSizeInBytes int64) string {
 }
 
 func GetPathSize(pathToObject string, recursive, human, all bool) (string, error) {
-	size, err := GetSize(pathToObject, all, recursive)
+	size, err := getSize(pathToObject, all, recursive)
 	if err != nil {
 		return "", err
 	}
 
 	sizeStr := fmt.Sprintf("%dB", size)
 	if human {
-		sizeStr = FormatSize(size)
+		sizeStr = formatSize(size)
 	}
 
 	return sizeStr, nil
