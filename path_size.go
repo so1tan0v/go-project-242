@@ -2,7 +2,6 @@ package code
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -92,7 +91,7 @@ func GetResult(pathToObject string, human bool, all bool, recursive bool) (strin
 	sizeRead, err := GetPathSize(pathToObject, human, all, recursive)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	return fmt.Sprintf("%s\t%s", sizeRead, pathToObject), nil

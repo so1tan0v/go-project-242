@@ -55,7 +55,3 @@ func GetAvailableCommands() cli.Command {
 		},
 	}
 }
-
-//func getCommandList() {
-//
-//}
